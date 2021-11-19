@@ -1,6 +1,6 @@
 import math
-from readability.text.analyzer import Analyzer
-from readability.exceptions import ReadabilityException
+from readability_metrics.text.analyzer import Analyzer
+from readability_metrics.exceptions import ReadabilityException
 
 
 class Result:
@@ -29,7 +29,7 @@ class Smog:
         self.all_sentences = all_sentences
         if not self.all_sentences:
             self._smog_stats = self._smog_text_stats(sentences)
-            
+
 
     def score(self):
         score = self._score()
@@ -46,7 +46,7 @@ class Smog:
         else:
             smog_stats = self._smog_stats
             num_sentences = 30
-        
+
         num_complex_words = smog_stats.num_poly_syllable_words
         return 1.0430 * math.sqrt(30 * num_complex_words / num_sentences) + 3.1291
 

@@ -1,4 +1,4 @@
-from readability.exceptions import ReadabilityException
+from readability_metrics.exceptions import ReadabilityException
 
 
 class Result:
@@ -11,7 +11,7 @@ class Result:
             format(self.score, self.grade_level)
 
 
-class LinsearWrite:
+class Spache:
     def __init__(self, stats):
         self._stats = stats
         if stats.num_words < 100:
@@ -21,17 +21,15 @@ class LinsearWrite:
         score = self._score()
         return Result(
             score=score,
-            grade_level=self._grade_level(score)
-        )
+            grade_level=self._grade_level(score))
 
     def _score(self):
-        s = self._stats
-        num_easy_words = s.num_words - s.num_poly_syllable_words
-        num_hard_words = s.num_poly_syllable_words
-        inter_score = (num_easy_words + (num_hard_words * 3)) / s.num_sentences
-        if inter_score > 20:
-            return inter_score / 2
-        return (inter_score - 2) / 2
+        stats = self._stats
+        avg_sentence_len = stats.num_words / stats.num_sentences
+        percent_difficult_words = \
+            stats.num_spache_complex / stats.num_words * 100
+
+        return (0.141 * avg_sentence_len) + (0.086 * percent_difficult_words) + 0.839
 
     def _grade_level(self, score):
         return str(round(score))

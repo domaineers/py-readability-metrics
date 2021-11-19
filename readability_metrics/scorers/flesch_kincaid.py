@@ -1,4 +1,4 @@
-from readability.exceptions import ReadabilityException
+from readability_metrics.exceptions import ReadabilityException
 
 
 class Result:
@@ -11,7 +11,7 @@ class Result:
             format(self.score, self.grade_level)
 
 
-class Spache:
+class FleschKincaid:
     def __init__(self, stats):
         self._stats = stats
         if stats.num_words < 100:
@@ -21,15 +21,13 @@ class Spache:
         score = self._score()
         return Result(
             score=score,
-            grade_level=self._grade_level(score))
+            grade_level=self._grade_level(score)
+        )
 
     def _score(self):
         stats = self._stats
-        avg_sentence_len = stats.num_words / stats.num_sentences
-        percent_difficult_words = \
-            stats.num_spache_complex / stats.num_words * 100
-
-        return (0.141 * avg_sentence_len) + (0.086 * percent_difficult_words) + 0.839
+        return (0.38 * stats.avg_words_per_sentence +
+                11.8 * stats.avg_syllables_per_word) - 15.59
 
     def _grade_level(self, score):
         return str(round(score))
